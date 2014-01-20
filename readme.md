@@ -8,20 +8,23 @@ Because most common words used for this are reserved in Ecma5 (eg. private, publ
 - - -
 
 *Glossary:*
-variety - complete class definition
-dna - class instance definition
-kind - public static scope
-bond - protected static scope
-body - public instance scope
-soul - protected instance scope
-soul.birth - constructor method
-variety function scope - private static scope
-spawn function scope - private instance scope
 
+* variety - complete class definition
+* dna - class instance definition
+* kind - public static scope
+* bond - protected static scope
+* body - public instance scope
+* soul - protected instance scope
+* soul.birth - constructor method
+* variety function scope - private static scope
+* spawn function scope - private instance scope
+
+- - -
 - - -
 
 ## Quick examples:
 
+- - -
 
 ### Create a simple object with a private scope:
 _var myObject = nature.spawn(dna);_
@@ -36,7 +39,7 @@ _var myObject = nature.spawn(dna);_
 	console.log(foo.hello()); //logs "hello world"
 
 
-
+- - -
 
 ### Create a Class:
 _var MyCLass = nature.species(variety);_
@@ -70,7 +73,7 @@ _var MyCLass = nature.species(variety);_
 	var bar = new Foo("John");
 	bar.present(); //logs "hello. My name is John."
 
-
+- - -
 
 ### Multiple inheretance:
 _var MyCLass = nature.species(variety, [, Parent1[, Parent2[, ... ParentN]]]);_
@@ -97,6 +100,7 @@ _var MyCLass = nature.species(variety, [, Parent1[, Parent2[, ... ParentN]]]);_
 
 
 
+- - -
 
 Note: if you want absolutely private scopes (inheriting classes cannot change), you can use the variety function scope for private static, and the spawn function scope for instance private.
 
