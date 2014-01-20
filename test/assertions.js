@@ -1,14 +1,5 @@
 //START TESTS
 
-//for classical programmers:
-//spawn() -- create Classless instance
-//body -- public scope
-//soul -- private scope
-//species() -- create Class object
-//kind -- public static
-//bond -- private static
-//this.spawn() -- Class definition
-
 //definitions
 var object1 = nature.spawn(function(body, soul){
 	soul.test = function(){
@@ -84,8 +75,9 @@ var Class3 = nature.species(function(){
 
 
 //tests
+var assertions = {};
 function assert(topic, assertion){
-	console.log(topic+": "+assertion);
+	assertions[topic] = assertion;
 }
 
 //check object
@@ -145,3 +137,9 @@ assert("inherited multiple body", d.test==d.bodyTest() && d.test!=c.test);
 //test soul
 var dTest = d.soulTest();
 assert("inherited multiple soul", typeof dTest.s == "object" && dTest.c=="abc" && dTest.e==3);
+
+
+//export to node.js
+if(typeof module !== 'undefined' && module.exports){
+	module.exports = assertions;
+}
