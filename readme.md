@@ -3,6 +3,12 @@
 NatureJS is a multiple inheretance mod for Javascript supporting private and static scopes.
 Supported in any Ecma5 compliant environment (node.js or client).
 
+Maintained by Carlos Ouro [@c_ouro](https://twitter.com/c_ouro)
+
+- - -
+
+## Introduction
+
 Because most common words used for this are reserved in Ecma5 (eg. private, public, static, protected, class, etc) this "alternate" view of nature and species was created to define the same properties.
 
 - - -
