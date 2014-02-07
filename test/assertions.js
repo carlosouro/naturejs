@@ -70,6 +70,22 @@ var Class3 = nature.species(function(){
 	});
 }, Class2, Class1);
 
+var Class4 = nature.species(function(kind, bond){
+
+	bond.test4 = true;
+	kind.test4 = function(){
+		return bond.test4;
+	}
+
+	this.spawn(function(body, soul){
+
+		body.test4 = function(){
+			return soul.extra == 3;
+		}
+
+	});
+
+}, Class3);
 
 
 
@@ -137,6 +153,24 @@ assert("inherited multiple body", d.test==d.bodyTest() && d.test!=c.test);
 //test soul
 var dTest = d.soulTest();
 assert("inherited multiple soul", typeof dTest.s == "object" && dTest.c=="abc" && dTest.e==3);
+
+//3rd level inheratance
+var e = new Class4("foo", "bar");
+assert("level 3: Create multiple inherited spawn", e instanceof Class4 && e.args[0]=="foo" && e.args[1]=="bar");
+
+//test kind
+Class4.test="aaaa";
+assert("level 3: inherited multiple kind", Class4.test==e.kindTest() && Class4.test!=Class1.test);
+
+//test body
+assert("level 3: inherited multiple body", e.test==e.bodyTest() && e.test!=c.test);
+
+//test own methods - kind
+assert("level 3: own kind", Class4.test4());
+
+//test own methods - body
+assert("level 3: own body", e.test4());
+
 
 
 //export to node.js

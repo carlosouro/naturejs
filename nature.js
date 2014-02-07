@@ -24,16 +24,33 @@ var nature = (function(){
 			sHelper:new SpeciesHelpers()
 		};
 
-		//establish baseline
-		var i = parents.length, def;
-		while(--i>=0){
-			def = parents[i]["nature:variety"] || parents[i];
-			def.call(baseline.sHelper,Variety,baseline.bond);
-		}
+		//recursively resolve inheratance
+		recursiveInheretance(Variety, parents, baseline, []);
 
 		return baseline;
 	}
-	nature.species = function(definition){
+
+	function recursiveInheretance(Variety, parents, baseline, resolvedList){
+
+		var i = parents.length, def, parentReferences;
+		while(i--){
+			def = parents[i];
+			if(!def["nature:variety"]){
+				//ingore previously resolved dependencies
+				if(resolvedList.indexOf(def)===-1){
+					def.call(baseline.sHelper,Variety,baseline.bond);
+					resolvedList.push(def);
+				}
+			} else {
+				recursiveInheretance(Variety, def["nature:variety"], baseline, resolvedList);
+			}
+
+		}
+	}
+
+
+
+	nature.species = function(){
 
 		var baseline;
 
@@ -54,12 +71,12 @@ var nature = (function(){
 
 		baseline = resolveInheritance(Variety, arguments);
 
-		//save definition for future inheritance dependencies
+		//save definitions for future inheritance dependencies
 		Object.defineProperty(Variety, "nature:variety", {
 		  enumerable: false,
 		  configurable: true,
 		  writable: true,
-		  value: definition
+		  value: arguments
 		});
 
 		return Variety;
