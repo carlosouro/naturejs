@@ -1,89 +1,130 @@
 var nature = (function(){
 
-	function SpeciesHelpers(){
-		this.dnas = [];
-	}
-	SpeciesHelpers.prototype.spawn = function(dna){
-			this.dnas.push(dna);
-	}
-	function SpawnHelpers(){};
-
-	var nature = {};
-	nature.spawn = function(definition){
-		var body = {}, soul = {};
-		var h = new SpawnHelpers();
-		definition.call(h, body, soul);
-		return body;
-	}
-
-	function resolveInheritance(Variety, parents){
+	function resolveInheritance(parents){
 
 		//empty baseline (no parents)
-		var baseline = {
-			bond:{},
-			sHelper:new SpeciesHelpers()
-		};
+		var definitions = [];
 
 		//recursively resolve inheratance
-		recursiveInheretance(Variety, parents, baseline, []);
+		recursiveInheretance(parents, definitions);
 
-		return baseline;
+		return definitions;
 	}
 
-	function recursiveInheretance(Variety, parents, baseline, resolvedList){
+	function recursiveInheretance(parents, definitions){
 
-		var i = parents.length, def, parentReferences;
-		while(i--){
+		var iMax = parents.length, def, i;
+		for(i=0; i<iMax; i++){
 			def = parents[i];
-			if(!def["nature:variety"]){
+			if(!def["nature:definition"]){
 				//ingore previously resolved dependencies
-				if(resolvedList.indexOf(def)===-1){
-					def.call(baseline.sHelper,Variety,baseline.bond);
-					resolvedList.push(def);
+				if(definitions.indexOf(def)===-1){
+					definitions.push(def);
 				}
 			} else {
-				recursiveInheretance(Variety, def["nature:variety"], baseline, resolvedList);
+				recursiveInheretance(def["nature:definition"], definitions);
 			}
 
 		}
 	}
 
+	function createClass(args, keys){
 
+		var definitions = resolveInheritance(args);
 
-	nature.species = function(){
+		var unfold, packageKey;
 
-		var baseline;
+		if (keys){
+			unfold = function(obj){
+				if(!obj['nature:protected']) throw new Error("Nature.js: Object package not found.");
+				return obj['nature:protected'](keys);
+			}
 
-		var Variety = function(){
+			packageKey = keys[keys.length-1];
+		}
 
-			var soul = {}, h = new SpawnHelpers(), body = this;
+		var Class = function(){
 
-			//create from dna definitions
-			baseline.sHelper.dnas.forEach(function(dna){
-				dna.call(h, body, soul);
-			});
+			var priv = {}, pub = this, i=definitions.length;
+
+			//create from definitions
+			while(i--){
+				definitions[i](pub, priv, unfold);
+			}
+
 			//initialise constructor if it exists
-			if(typeof soul.birth == "function"){
-				soul.birth.apply(body, arguments);
+			if(typeof priv.construct == "function"){
+				priv.construct.apply(priv, arguments);
+			}
+
+			if(packageKey){
+				this['nature:protected'] = function(keys){
+					if(packageKey && keys && keys.indexOf(packageKey)!==-1){
+						return priv;
+					} else {
+						throw new Error("Nature.js: Private access from out of package denied.");
+					}
+				}
 			}
 
 		}
 
-		baseline = resolveInheritance(Variety, arguments);
-
 		//save definitions for future inheritance dependencies
-		Object.defineProperty(Variety, "nature:variety", {
+		Object.defineProperty(Class, "nature:definition", {
 		  enumerable: false,
 		  configurable: true,
 		  writable: true,
-		  value: arguments
+		  value: args
 		});
 
-		return Variety;
+		return Class;
 
 	}
 
-	return nature;
+	function createNature(keys){
+
+		var locked = false;
+
+		var pack = {
+
+			createPackage : function(){
+
+				var packageKeys = keys ? keys.slice() : [];
+
+				packageKeys.push({});
+
+				return createNature(packageKeys);
+			},
+
+			from : function(){
+				args = [].slice.apply(arguments);
+				return {
+					create: function(def){
+						args.push(def)
+						return createClass(args, keys);
+					}
+				}
+			},
+
+			create: function(def){
+
+				if(locked) throw new Error("Nature.js: cannot create class on closed package.");
+
+				return createClass([def], keys);
+			}
+		}
+
+		if(keys){
+			pack.close = function(){
+				locked = true;
+			}
+		}
+
+		return pack;
+	}
+
+	return createNature();
+
 })();
 
 if(typeof module !== 'undefined' && module.exports){
