@@ -13,8 +13,8 @@ var nature = (function(){
 
 	function recursiveInheretance(parents, definitions){
 
-		var iMax = parents.length, def, i;
-		for(i=0; i<iMax; i++){
+		var i = parents.length, def;
+		while(i--){
 			def = parents[i];
 			if(!def["nature:definition"]){
 				//ingore previously resolved dependencies
@@ -58,13 +58,19 @@ var nature = (function(){
 			}
 
 			if(packageKey){
-				this['nature:protected'] = function(keys){
-					if(packageKey && keys && keys.indexOf(packageKey)!==-1){
-						return priv;
-					} else {
-						throw new Error("Nature.js: Private access from out of package denied.");
+
+				Object.defineProperty(this, "nature:protected", {
+				  enumerable: false,
+				  configurable: false,
+				  writable: false,
+				  value: function(keys){
+						if(packageKey && keys && keys.indexOf(packageKey)!==-1){
+							return priv;
+						} else {
+							throw new Error("Nature.js: Private access from out of package denied.");
+						}
 					}
-				}
+				});
 			}
 
 		}
@@ -72,8 +78,8 @@ var nature = (function(){
 		//save definitions for future inheritance dependencies
 		Object.defineProperty(Class, "nature:definition", {
 		  enumerable: false,
-		  configurable: true,
-		  writable: true,
+		  configurable: false,
+		  writable: false,
 		  value: args
 		});
 

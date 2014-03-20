@@ -40,9 +40,8 @@ var Class3 = nature.from(Class2).create(function(pub, priv){
 
 	var superPrivTest = pub.privTest;
 	pub.privTest = function(){
-		var result = superPrivTest();
 
-		return typeof result.s == "object" && result.c=="abc" && priv.extra==3;
+		return superPrivTest() && priv.extra==3;
 
 	}
 
@@ -122,13 +121,13 @@ assert("inherited priv", c.privTest() );
 
 //2ND LEVEL INHERETANCE
 var d = new Class3("foo", "bar");
-assert("Create multiple inherited spawn", d instanceof Class3 && d.args[0]=="foo" && d.args[1]=="bar");
+assert("Create 2nd level inherited spawn", d instanceof Class3 && d.args[0]=="foo" && d.args[1]=="bar");
 
 //test pub
-assert("inherited pub", d.test==d.pubTest() && d.test!=c.test);
+assert("2nd level inherited pub", d.test==d.pubTest() && d.test!=c.test);
 
 //test priv
-assert("inherited priv", d.privTest());
+assert("2nd level inherited priv", d.privTest());
 
 //3RD LEVEL INHERETANCE
 var e = new Class4("foo", "bar");
