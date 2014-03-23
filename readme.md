@@ -1,113 +1,58 @@
 # NatureJS
 
-NatureJS is a multiple inheretance mod for Javascript supporting private and static scopes.
+NatureJS is an easy to use class mod for Javascript supporting private and package scopes, and inheretance.
 Supported in any Ecma5 compliant environment (node.js or client).
 
 Maintained by Carlos Ouro [@c_ouro](https://twitter.com/c_ouro)
 
 - - -
 
-## Introduction
-
-Because most common words used for this are reserved in Ecma5 (eg. private, public, static, protected, class, etc) this "alternate" view of nature and species was created to define the same properties.
-
-- - -
-
-*Glossary:*
-
-* variety - complete class definition
-* dna - class instance definition
-* kind - public static scope
-* bond - protected static scope
-* body - public instance scope
-* soul - protected instance scope
-* soul.birth - constructor method
-* variety function scope - private static scope
-* spawn function scope - private instance scope
-
-- - -
-- - -
-
 ## Quick examples:
-
-- - -
-
-### Create a simple object with a private scope:
-_var myObject = nature.spawn(dna);_
-
-```JavaScript
-var foo = nature.spawn(function(body, soul){
-	soul.test = "hello world";
-	body.hello = function(){
-		return soul.test;
-	}
-});
-
-console.log(foo.hello()); //logs "hello world"
-```
 
 
 - - -
 
 ### Create a Class:
-_var MyCLass = nature.species(variety);_
+_var MyCLass = nature.create(definition);_
 
 ```JavaScript
-var Foo = nature.species(function(kind, bond){
+var Foo = nature.create(function(pub, priv){
 
-	//define static scope stuff
-	bond.hello = "hello";
-	kind.hello = function(){
-		return bond.hello;
+	//constructor
+	priv.construct = function(name){
+		priv.name = name;
 	}
 
-	//instance definition (dna)
-	this.spawn(function(body, soul){
-
-		//constructor
-		soul.birth = function(name){
-			soul.name = name;
-		}
-
-		body.present = function(){
-			console.log(bond.hello+". My name is "+soul.name+".")
-		}
-
-	});
+	pub.present = function(){
+		console.log("Hello. My name is "+priv.name+".")
+	}
 
 });
 
-console.log(Foo.hello()); //logs "hello"
-
 var bar = new Foo("John");
-bar.present(); //logs "hello. My name is John."
+bar.present(); //logs "Hello. My name is John."
 ```
 
 - - -
 
+Note: Multiple inheretance is mainly suited for small or, at most, average dependency graphs - if your application has a very complex class structure consider keeping to single inheretance, otherwise you risk running into classical multiple inheretance issues.
+You've been warned.
+
 ### Multiple inheretance:
-_var MyCLass = nature.species(variety, [, Parent1[, Parent2[, ... ParentN]]]);_
+_var MyCLass = nature.from([ParentN[, ... Parent2], ] Parent1).create(definition);_
 
 ```JavaScript
-var Bar = nature.species(function(kind, bond){
+var Bar = nature.from(Foo).create(function(pub, priv){
 
-	bond.hello = "hi";
+	pub.greet = function(whom){
+		console.log("Hi "+whom+"!. I'm "+priv.name+".");
+	}
 
-	this.spawn(function(body, soul){
-
-		body.greet = function(whom){
-			console.log(kind.hello()+" "+whom+"!. I'm "+soul.name+".");
-		}
-
-	});
-
-}, Foo);
-
-console.log(Bar.hello()); //logs "hi"
+});
 
 var baz = new Bar("Carlos");
-baz.present(); //logs "hi. My name is Carlos."
-baz.greet("Chris"); //logs "hi Chris! I'm Carlos."
+baz.present(); //logs "Hello. My name is Carlos."
+baz.greet("Chris"); //logs "Hi Chris! I'm Carlos."
 ```
 
 
@@ -118,42 +63,33 @@ Note: if you want absolutely private scopes (inheriting classes cannot change), 
 ### Non-inheritable private scopes:
 
 ```JavaScript
-var Baz = nature.species(function(kind, soul){
+var Baz = nature.create(function(body, soul){
 
-	//private static variable
-	var hello = "hello";
+	var happy = "happy!";
 
-	kind.hello = function(){
-		return hello;
+	body.sayHappy = function(){
+		console.log("I'm "+happy+"!");
 	}
 
-	this.spawn(function(body, soul){
+});
+var Qux = nature.from(Baz).create(function(body, soul){
 
-		var happy = "happy!";
+	var happy = "angry!";
 
-		body.sayHappy = function(){
-			console.log(hello+", I'm "+happy+"!");
-		}
-
-	})
+	body.sayAngry = function(){
+		console.log("I'm "+happy+"!");
+	}
 
 });
-var Qux = nature.species(function(kind, soul){
-	var hello = "hey";
-
-	this.spawn(function(body, soul){
-
-		var happy = "angry!";
-
-		body.sayAngry = function(){
-			console.log(hello+", I'm "+happy+"!");
-		}
-
-	})
-}, Baz);
 
 
 var qux = new Qux();
-qux.sayAngry(); //logs "hey, I'm angry!"
-qux.sayHappy(); //logs "hello, I'm happy!"
+qux.sayAngry(); //logs "I'm angry!"
+qux.sayHappy(); //logs "I'm happy!"
 ```
+
+- - -
+
+### Packages
+
+TODO: packages documentation
