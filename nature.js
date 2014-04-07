@@ -32,12 +32,22 @@ var nature = (function(){
 
 		var definitions = resolveInheritance(args);
 
-		var unfold, packageKey;
+		var unfold, packageKey, mainDef;
 
 		if (keys){
+
+			//get main method definition
+			mainDef = definitions[0];
+
+			//unfold method
 			unfold = function(obj){
 				if(!obj['nature:protected']) throw new Error("Nature.js: Object package not found.");
 				return obj['nature:protected'](keys);
+			}
+
+			//reassign new method enclosed with unfold
+			definitions[0] = args[args.length-1] = function(pub, priv){
+				mainDef.apply(this, [pub, priv, unfold]);
 			}
 
 			packageKey = keys[keys.length-1];
@@ -49,7 +59,7 @@ var nature = (function(){
 
 			//create from definitions
 			while(i--){
-				definitions[i](pub, priv, unfold);
+				definitions[i](pub, priv);
 			}
 
 			//initialise constructor if it exists
@@ -87,7 +97,7 @@ var nature = (function(){
 
 	}
 
-	function createNature(keys){
+	function createNature(pKeys){
 
 		var locked = false;
 
@@ -95,7 +105,7 @@ var nature = (function(){
 
 			createPackage : function(){
 
-				var packageKeys = keys ? keys.slice() : [];
+				var packageKeys = pKeys ? pKeys.slice() : [];
 
 				packageKeys.push({});
 
@@ -106,8 +116,11 @@ var nature = (function(){
 				args = [].slice.apply(arguments);
 				return {
 					create: function(def){
+
+						if(locked) throw new Error("Nature.js: cannot create class on closed package.");
+
 						args.push(def)
-						return createClass(args, keys);
+						return createClass(args, pKeys);
 					}
 				}
 			},
@@ -116,11 +129,11 @@ var nature = (function(){
 
 				if(locked) throw new Error("Nature.js: cannot create class on closed package.");
 
-				return createClass([def], keys);
+				return createClass([def], pKeys);
 			}
 		}
 
-		if(keys){
+		if(pKeys){
 			pack.close = function(){
 				locked = true;
 			}

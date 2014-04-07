@@ -80,13 +80,21 @@ pack.close();
 //other package
 var pack2 = nature.createPackage();
 
-var Class5 = pack2.from(PackClass2).create(function(){})
+var Class5 = pack2.from(PackClass2).create(function(pub, priv, unfold){
+	pub.testPack2 = function(obj){
+		return unfold(obj).testPack==="test";
+	}
+})
 
 
-//subpackage
+//subpackage of 1
 var pack3 = pack.createPackage();
 
-var Class6 = pack3.from(PackClass2).create(function(){})
+var Class6 = pack3.from(PackClass2).create(function(pub, priv, unfold){
+	pub.testPack2 = function(obj){
+		return unfold(obj).testPack==="test";
+	}
+})
 
 
 //tests
@@ -160,14 +168,17 @@ assert("package: successful lock", passed);
 //out of package, no access
 var h = new Class5();
 
-//h can't access f priv
+//h can access f priv (through parent methods)
+assert("package: child Class inherited package methods private package access", h.testPack(f));
+
+//h can't access f priv in it's own methods
 var passed = false;
 try{
-	h.testPack(f); //should throw an error
+	h.testPack2(f); //should throw an error
 } catch(e){
 	passed = e.message === "Nature.js: Private access from out of package denied.";
 }
-assert("package: child Class can't access parent's package", passed);
+assert("package: child Class no access to parent package objects in it's own methods", passed);
 
 //g can't access h priv
 var passed = false;
@@ -180,7 +191,7 @@ assert("package: child Class does not belong to any package", passed);
 
 //subpackage tests
 var l = new Class6();
-assert("subpackage: can access parent package", l.testPack(f));
+assert("subpackage: can access parent package", l.testPack2(f));
 
 
 
