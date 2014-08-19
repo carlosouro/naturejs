@@ -1,7 +1,7 @@
 {
   "name": "nature-js",
   "description": "Multiple inheretance mod for Javascript supporting private and public scopes",
-  "version": "0.1.0",
+  "version": "0.0.0-odbVersion",
   "homepage": "",
   "author": {
     "name": "Odobo Limited",
@@ -25,12 +25,16 @@
     "node": ">= 0.8.0"
   },
   "keywords": [
-  	"classes",
-    "inheretance",
-    "multiple inheretance",
-    "private",
-    "protected",
-    "access control",
-    "access modifiers"
-  ]
+        "classes",
+        "inheretance",
+        "multiple inheretance",
+        "private",
+        "protected",
+        "access control",
+        "access modifiers"
+    ],
+    "devDependencies": {
+        "odb_grunt_packager": "^0.1.0"
+    }
+
 }
