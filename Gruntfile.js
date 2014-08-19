@@ -32,7 +32,6 @@ module.exports = function(grunt) {
 
   //load odb_grunt_packager tasks
   grunt.loadNpmTasks('odb_grunt_packager');
-  grunt.loadNpmTasks('grunt-contrib-watch');
 
   grunt.registerTask('build', ['odb_build:dev']); //basic build
 
