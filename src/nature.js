@@ -65,8 +65,8 @@ var nature = (function(){
 			}
 
 			//initialise constructor if it exists
-			if(typeof priv.construct === "function"){
-				priv.construct.apply(prot, arguments);
+			if(typeof prot.construct === "function"){
+				prot.construct.apply(prot, arguments);
 			}
 
 			if(packageKey){
