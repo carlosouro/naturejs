@@ -4,8 +4,6 @@
 NatureJS is an easy to use Class system for Javascript supporting private, protected and package scopes, and inheretance.
 Supported in any Ecma5 compliant javascript environment (node.js or browser).
 
-Created and maintained by [Carlos Ouro](https://github.com/carlosouro)
-
 - - -
 
 ## Quick examples:
