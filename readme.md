@@ -53,15 +53,14 @@ baz.greet("Chris"); //logs "Hi Chris! I'm Carlos."
 ```
 
 
-Note: Multiple inheretance is mainly suited for small or, at most, average dependency graphs - if your application has a very complex class structure consider keeping to single inheretance, otherwise you risk running into multiple inheretance issues.
+_Note: Multiple inheretance is mainly suited for small or, at most, average dependency graphs - if your application has a very complex class structure consider keeping to single inheretance, otherwise you risk running into multiple inheretance issues.
 NatureJs, when given the same property declared in multiple inerited parents, will always allow the right-most (ParentN argument) to override.
-You've been warned.
+You've been warned._
 
 - - -
 
-Note: if you want absolutely private scopes (inheriting classes cannot change), you can use the variety function scope for private static, and the spawn function scope for instance private.
-
 ### Non-inheritable private instance scopes:
+If you want absolutely private scopes (inheriting classes cannot change), you can use the variety function scope for private static, and the spawn function scope for instance private.
 
 ```JavaScript
 var Baz = nature.create(function(pub, prot){
