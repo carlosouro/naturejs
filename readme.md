@@ -1,4 +1,5 @@
 # NatureJS
+![Travis-CI build](https://travis-ci.org/Odobo/naturejs.svg "Travis-CI build")
 
 NatureJS is an easy to use Class system for Javascript supporting private, protected and package scopes, and inheretance.
 Supported in any Ecma5 compliant javascript environment (node.js or browser).
