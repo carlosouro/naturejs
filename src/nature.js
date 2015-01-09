@@ -41,7 +41,9 @@ var nature = (function(){
 
 			//unfold method
 			unfold = function(obj){
-				if(!obj['nature:protected']) throw new Error("Nature.js: Object package not found.");
+				if(!obj['nature:protected']) {
+					throw new Error("Nature.js: Object package not found.");
+				}
 				return obj['nature:protected'](keys);
 			}
 
@@ -63,8 +65,8 @@ var nature = (function(){
 			}
 
 			//initialise constructor if it exists
-			if(typeof prot.construct == "function"){
-				prot.construct.apply(prot, arguments);
+			if(typeof priv.construct === "function"){
+				priv.construct.apply(prot, arguments);
 			}
 
 			if(packageKey){
@@ -113,11 +115,13 @@ var nature = (function(){
 			},
 
 			from : function(){
-				args = [].slice.apply(arguments);
+				var args = [].slice.apply(arguments);
 				return {
 					create: function(def){
 
-						if(locked) throw new Error("Nature.js: cannot create class on closed package.");
+						if(locked) {
+							throw new Error("Nature.js: cannot create class on closed package.");
+						}
 
 						args.push(def)
 						return createClass(args, pKeys);
@@ -127,7 +131,9 @@ var nature = (function(){
 
 			create: function(def){
 
-				if(locked) throw new Error("Nature.js: cannot create class on closed package.");
+				if(locked) {
+					throw new Error("Nature.js: cannot create class on closed package.");
+				}
 
 				return createClass([def], pKeys);
 			}

@@ -1,0 +1,18 @@
+{
+  "curly": true,
+  "eqeqeq": true,
+  "immed": false,
+  "latedef": true,
+  "newcap": true,
+  "noarg": true,
+  "sub": true,
+  "undef": true,
+  "boss": true,
+  "eqnull": true,
+  "node": true,
+  "asi":true,
+  "expr":true,
+  "funcscope": true,
+  "loopfunc": true,
+  "shadow": true
+}

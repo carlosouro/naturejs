@@ -1,7 +1,7 @@
 {
   "name": "nature-js",
   "description": "Class system for Javascript supporting private, protected and public scopes, multiple inheritance and class packages",
-  "version": "0.1.1",
+  "version": "0.3.0",
   "homepage": "",
   "author": {
     "name": "Carlos Ouro",
@@ -15,7 +15,7 @@
   	"test": "mocha --reporter spec"
 	},
   "license": "MIT",
-  "main":"nature.js",
+  "main":"src/nature.js",
   "engines": {
     "node": ">= 0.8.0"
   },
