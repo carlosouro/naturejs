@@ -20,7 +20,7 @@
   "license": "MIT",
   "main":"src/nature.js",
   "engines": {
-    "node": ">= 0.8.0"
+    "node": ">= 0.10"
   },
   "keywords": [
   	"classes",
