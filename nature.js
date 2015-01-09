@@ -46,8 +46,8 @@ var nature = (function(){
 			}
 
 			//reassign new method enclosed with unfold
-			definitions[0] = args[args.length-1] = function(pub, priv){
-				mainDef.apply(this, [pub, priv, unfold]);
+			definitions[0] = args[args.length-1] = function(pub, prot){
+				mainDef.apply(this, [pub, prot, unfold]);
 			}
 
 			packageKey = keys[keys.length-1];
@@ -55,16 +55,16 @@ var nature = (function(){
 
 		var Class = function(){
 
-			var priv = {}, pub = this, i=definitions.length;
+			var prot = {}, pub = this, i=definitions.length;
 
 			//create from definitions
 			while(i--){
-				definitions[i](pub, priv);
+				definitions[i](pub, prot);
 			}
 
 			//initialise constructor if it exists
-			if(typeof priv.construct == "function"){
-				priv.construct.apply(priv, arguments);
+			if(typeof prot.construct == "function"){
+				prot.construct.apply(prot, arguments);
 			}
 
 			if(packageKey){
@@ -75,7 +75,7 @@ var nature = (function(){
 				  writable: false,
 				  value: function(keys){
 						if(packageKey && keys && keys.indexOf(packageKey)!==-1){
-							return priv;
+							return prot;
 						} else {
 							throw new Error("Nature.js: Private access from out of package denied.");
 						}
