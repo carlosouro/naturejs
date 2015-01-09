@@ -12,7 +12,10 @@
     "url": "https://github.com/Odobo/naturejs.git"
   },
   "scripts": {
-  	"test": "mocha --reporter spec"
+  	"test": "./node_modules/mocha/bin/mocha --reporter spec"
+	},
+	"devDependencies":{
+		"mocha":"^2.1.0"
 	},
   "license": "MIT",
   "main":"src/nature.js",
