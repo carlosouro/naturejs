@@ -1,7 +1,7 @@
 # NatureJS
 ![Travis-CI build](https://travis-ci.org/Odobo/naturejs.svg "Travis-CI build")
 
-NatureJS is an easy to use Class system for Javascript supporting private, protected and package scopes, and inheretance.
+NatureJS is an easy to use Class system for Javascript supporting private, protected and package scopes, and inheritance.
 Supported in any Ecma5 compliant javascript environment (node.js or browser).
 
 - - -
@@ -35,7 +35,7 @@ bar.present(); //logs "Hello. My name is John."
 
 - - -
 
-### Multiple inheretance:
+### Multiple inheritance:
 _var MyCLass = nature.from([ParentN[, ... Parent2], ] Parent1).create(definition);_
 
 ```JavaScript
@@ -53,7 +53,7 @@ baz.greet("Chris"); //logs "Hi Chris! I'm Carlos."
 ```
 
 
-_Note: Multiple inheretance is mainly suited for small or, at most, average dependency graphs - if your application has a very complex class structure consider keeping to single inheretance, otherwise you risk running into multiple inheretance issues.
+_Note: Multiple inheritance is mainly suited for small or, at most, average dependency graphs - if your application has a very complex class structure consider keeping to single inheritance, otherwise you risk running into multiple inheritance issues.
 NatureJs, when given the same property declared in multiple inerited parents, will always allow the right-most (ParentN argument) to override.
 You've been warned._
 
