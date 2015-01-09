@@ -1,9 +1,9 @@
 # NatureJS
 
-NatureJS is an easy to use class mod for Javascript supporting private and package scopes, and inheretance.
-Supported in any Ecma5 compliant environment (node.js or client).
+NatureJS is an easy to use class mod for Javascript supporting private, protected and package scopes, and inheretance.
+Supported in any Ecma5 compliant javascript environment (node.js or browser).
 
-Maintained by Carlos Ouro [@c_ouro](https://twitter.com/c_ouro)
+Created and maintained by [Carlos Ouro](https://github.com/carlosouro)
 
 - - -
 
@@ -16,15 +16,16 @@ Maintained by Carlos Ouro [@c_ouro](https://twitter.com/c_ouro)
 _var MyCLass = nature.create(definition);_
 
 ```JavaScript
-var Foo = nature.create(function(pub, priv){
+var Foo = nature.create(function(pub, prot){
 
 	//constructor
-	priv.construct = function(name){
-		priv.name = name;
+	//prot scope is protected
+	prot.construct = function(name){
+		prot.name = name;
 	}
 
 	pub.present = function(){
-		console.log("Hello. My name is "+priv.name+".")
+		console.log("Hello. My name is "+prot.name+".")
 	}
 
 });
@@ -35,17 +36,14 @@ bar.present(); //logs "Hello. My name is John."
 
 - - -
 
-Note: Multiple inheretance is mainly suited for small or, at most, average dependency graphs - if your application has a very complex class structure consider keeping to single inheretance, otherwise you risk running into classical multiple inheretance issues.
-You've been warned.
-
 ### Multiple inheretance:
 _var MyCLass = nature.from([ParentN[, ... Parent2], ] Parent1).create(definition);_
 
 ```JavaScript
-var Bar = nature.from(Foo).create(function(pub, priv){
+var Bar = nature.from(Foo).create(function(pub, prot){
 
 	pub.greet = function(whom){
-		console.log("Hi "+whom+"!. I'm "+priv.name+".");
+		console.log("Hi "+whom+"!. I'm "+prot.name+".");
 	}
 
 });
@@ -56,28 +54,32 @@ baz.greet("Chris"); //logs "Hi Chris! I'm Carlos."
 ```
 
 
+Note: Multiple inheretance is mainly suited for small or, at most, average dependency graphs - if your application has a very complex class structure consider keeping to single inheretance, otherwise you risk running into multiple inheretance issues.
+NatureJs, when given the same property declared in multiple inerited parents, will always allow the right-most (ParentN argument) to override.
+You've been warned.
+
 - - -
 
 Note: if you want absolutely private scopes (inheriting classes cannot change), you can use the variety function scope for private static, and the spawn function scope for instance private.
 
-### Non-inheritable private scopes:
+### Non-inheritable private instance scopes:
 
 ```JavaScript
-var Baz = nature.create(function(body, soul){
+var Baz = nature.create(function(pub, prot){
 
-	var happy = "happy!";
+	var privateText = "happy!";
 
-	body.sayHappy = function(){
-		console.log("I'm "+happy+"!");
+	pub.sayHappy = function(){
+		console.log("I'm "+privateText+"!");
 	}
 
 });
-var Qux = nature.from(Baz).create(function(body, soul){
+var Qux = nature.from(Baz).create(function(pub, prot){
 
-	var happy = "angry!";
+	var privateText = "angry!";
 
-	body.sayAngry = function(){
-		console.log("I'm "+happy+"!");
+	pub.sayAngry = function(){
+		console.log("I'm "+privateText+"!");
 	}
 
 });
@@ -91,5 +93,37 @@ qux.sayHappy(); //logs "I'm happy!"
 - - -
 
 ### Packages
+_var myPackage = nature.createPackage();_
 
-TODO: packages documentation
+```JavaScript
+var pack = nature.createPackage();
+
+var Foo = pack.create(function(pub, prot, unfold){
+
+	prot.bar = "hi!";
+
+});
+var Baz = pack.create(function(pub, prot, unfold){
+
+	pub.logProtectedBar = function(obj){
+
+		var instanceProt = unfold(obj); //Note: throws error in case of out of package obj
+
+		console.log( instanceProt.bar );
+	}
+
+});
+
+
+var foo = new Foo();
+var baz = new Baz();
+
+baz.logProtectedBar(foo); //logs "hi!"
+```
+
+- - -
+
+### SubPackages
+_var mySubPackage = pack.createPackage();_
+
+Subpackages can access all the parent packages instances protected scopes.
