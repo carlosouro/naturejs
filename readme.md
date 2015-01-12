@@ -125,3 +125,9 @@ baz.logProtectedBar(foo); //logs "hi!"
 _var mySubPackage = pack.createPackage();_
 
 Subpackages can access all the parent packages instances protected scopes.
+
+- - -
+### Legal Stuff
+
+MIT license.
+See the included LICENSE file for more details.
