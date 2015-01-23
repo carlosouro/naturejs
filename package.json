@@ -12,18 +12,22 @@
     "url": "https://github.com/Odobo/naturejs.git"
   },
   "scripts": {
-  	"test": "./node_modules/mocha/bin/mocha --reporter spec"
-	},
-	"devDependencies":{
-		"mocha":"^2.1.0"
-	},
+    "test": "NODE_ENV=test YOURPACKAGE_COVERAGE=1 ./node_modules/mocha/bin/mocha --reporter mocha-lcov-reporter | ./node_modules/coveralls/bin/coveralls.js",
+    "local-test": "NODE_ENV=test YOURPACKAGE_COVERAGE=1 ./node_modules/mocha/bin/mocha --reporter html-cov > temp/cov.html ; open temp/cov.html"
+  },
+  "devDependencies": {
+    "mocha": "^2.1.0",
+    "blanket": "^1.1.6",
+    "coveralls": "^2.11.2",
+    "mocha-lcov-reporter": "0.0.1"
+  },
   "license": "MIT",
-  "main":"src/nature.js",
+  "main": "src/nature.js",
   "engines": {
     "node": ">= 0.10"
   },
   "keywords": [
-  	"classes",
+    "classes",
     "inheretance",
     "multiple inheretance",
     "private",

@@ -4,6 +4,9 @@ var fs = require('fs');
 var path = require("path");
 var assert = require('assert');
 
+//blanket to test nature.js file coverage
+require('blanket')({"data-cover-only":'src/nature.js'});
+
 describe('nature.js', function(){
 
 	var nature;
