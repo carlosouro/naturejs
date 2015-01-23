@@ -208,7 +208,7 @@ describe('nature.js', function(){
 			assert(g.testPack(f), "cross-private access");
 		})
 
-		it('package.close() correctly locks packages', function(){
+		it('package.close() correctly locks packages (.create())', function(){
 
 			pack.close();
 
@@ -216,6 +216,20 @@ describe('nature.js', function(){
 			var passed = false;
 			try{
 				pack.create(function(){}); //should throw an error
+			} catch(e){
+				passed = e.message === "Nature.js: cannot create class on closed package.";
+			}
+			assert(passed, "successful lock error");
+		})
+
+		it('package.close() correctly locks packages (from().create())', function(){
+
+			pack.close();
+
+			//test package is locked
+			var passed = false;
+			try{
+				pack.from(Class1).create(function(){}); //should throw an error
 			} catch(e){
 				passed = e.message === "Nature.js: cannot create class on closed package.";
 			}
