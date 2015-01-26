@@ -28,7 +28,7 @@ var nature = (function(){
 		}
 	}
 
-	function createClass(args, keys){
+	function createClass(args, keys, factoryMode){
 
 		var definitions = resolveInheritance(args);
 
@@ -55,9 +55,8 @@ var nature = (function(){
 			packageKey = keys[keys.length-1];
 		}
 
-		var Class = function(){
-
-			var prot = {}, pub = this, i=definitions.length;
+		function generateInstance(args, pub, prot){
+			var i=definitions.length;
 
 			//create from definitions
 			while(i--){
@@ -66,12 +65,12 @@ var nature = (function(){
 
 			//initialise constructor if it exists
 			if(typeof prot.construct === "function"){
-				prot.construct.apply(prot, arguments);
+				prot.construct.apply(prot, args);
 			}
 
 			if(packageKey){
 
-				Object.defineProperty(this, "nature:protected", {
+				Object.defineProperty(pub, "nature:protected", {
 				  enumerable: false,
 				  configurable: false,
 				  writable: false,
@@ -84,28 +83,71 @@ var nature = (function(){
 					}
 				});
 			}
-
 		}
 
+		var NatureFactory;
+		if(!factoryMode){
+
+			//regular class (returns Class)
+			NatureFactory = function Class(){
+				generateInstance(arguments, this, {});
+			}
+
+		} else {
+			//a factory method (returns function)
+			NatureFactory = function Factory(){
+				var instance = {}, prot = {};
+
+				generateInstance(arguments, instance, prot);
+
+				var main;
+				if(['object', 'function'].indexOf(typeof prot.scope)!==-1 && prot.scope!==null){
+					main = prot.scope;
+					for(el in instance) {
+						main[el] = instance[el];
+					}
+				} else {
+					main = instance;
+				}
+
+				return main;
+			}
+		}
+
+
 		//save definitions for future inheritance dependencies
-		Object.defineProperty(Class, "nature:definition", {
+		Object.defineProperty(NatureFactory, "nature:definition", {
 		  enumerable: false,
 		  configurable: false,
 		  writable: false,
 		  value: args
 		});
 
-		return Class;
+		return NatureFactory;
 
 	}
+
+
 
 	function createNature(pKeys){
 
 		var locked = false;
 
+		function generateCreateMethod(deps, isFactory){
+
+			return function create(def){
+				if(locked) {
+					throw new Error("Nature.js: cannot create class on closed package.");
+				}
+
+				deps.push(def);
+				return createClass(deps, pKeys, isFactory);
+			}
+		}
+
 		var pack = {
 
-			createPackage : function(){
+			createPackage : function createPackage(){
 
 				var packageKeys = pKeys ? pKeys.slice() : [];
 
@@ -114,33 +156,20 @@ var nature = (function(){
 				return createNature(packageKeys);
 			},
 
-			from : function(){
-				var args = [].slice.apply(arguments);
+			from : function from(){
+				var deps = [].slice.apply(arguments);
 				return {
-					create: function(def){
-
-						if(locked) {
-							throw new Error("Nature.js: cannot create class on closed package.");
-						}
-
-						args.push(def)
-						return createClass(args, pKeys);
-					}
+					create: generateCreateMethod(deps),
+					factory: generateCreateMethod(deps, true)
 				}
 			},
 
-			create: function(def){
-
-				if(locked) {
-					throw new Error("Nature.js: cannot create class on closed package.");
-				}
-
-				return createClass([def], pKeys);
-			}
+			create: generateCreateMethod([]),
+			factory: generateCreateMethod([], true)
 		}
 
 		if(pKeys){
-			pack.close = function(){
+			pack.close = function close(){
 				locked = true;
 			}
 		}

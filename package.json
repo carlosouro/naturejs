@@ -1,7 +1,7 @@
 {
   "name": "nature-js",
   "description": "Class system for Javascript supporting private, protected and public scopes, multiple inheritance and class packages",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "homepage": "",
   "author": {
     "name": "Carlos Ouro",
@@ -13,7 +13,7 @@
   },
   "scripts": {
     "test": "NODE_ENV=test YOURPACKAGE_COVERAGE=1 ./node_modules/mocha/bin/mocha --reporter mocha-lcov-reporter | ./node_modules/coveralls/bin/coveralls.js",
-    "local-test": "NODE_ENV=test YOURPACKAGE_COVERAGE=1 ./node_modules/mocha/bin/mocha --reporter spec",
+    "local-test": "NODE_ENV=test ./node_modules/mocha/bin/mocha --reporter spec",
     "local-test-coverage": "NODE_ENV=test YOURPACKAGE_COVERAGE=1 ./node_modules/mocha/bin/mocha --reporter html-cov > temp/cov.html ; open temp/cov.html"
   },
   "devDependencies": {
@@ -35,6 +35,7 @@
     "protected",
     "access control",
     "access modifiers",
-    "package"
+    "package",
+    "factory"
   ]
 }

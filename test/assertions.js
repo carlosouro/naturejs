@@ -5,7 +5,7 @@ var path = require("path");
 var assert = require('assert');
 
 //blanket to test nature.js file coverage
-require('blanket')({"data-cover-only":'src/nature.js'});
+if(process.env.YOURPACKAGE_COVERAGE) require('blanket')({"data-cover-only":'src/nature.js'});
 
 describe('nature.js', function(){
 
@@ -35,23 +35,30 @@ describe('nature.js', function(){
 
 
 	//Class variables needed for the tests
-	var Class1,Class2,Class3,Class4Extra,Class4,pack,PackClass1,PackClass2,pack2,Class5,pack3,Class6;
+	var Class1,Factory1,Class2,Class3,MultipleIh3rdExtra,Factory2,pack,PackClass1,PackFactory1,pack2,Factory3,pack3,Class6;
+	var test1ClassFunction;
 
 	//instances used in the tests
-	var a,b,c,d,e,f,g,l;
+	var a,b,c,d,e,f,g,l,m,n;
 
 	describe('basics', function(){
 
-		it('#create() spawns a new class', function(){
+		it('#create(Class1) spawns a new class', function(){
 
-			//Regular class
-			Class1 = nature.create(function(pub, priv){
+			test1ClassFunction = function(pub, prot){
 
-				priv.construct = function(){
+				prot.construct = function(){
 					pub.args = arguments;
 				}
 
-				priv.test = {};
+				prot.scope = function(){
+					return prot.test;
+				}
+				pub.factoryTest = function(){
+					return prot.test;
+				}
+
+				prot.test = {};
 				pub.test = {};
 
 				pub.pubTest = function(){
@@ -65,14 +72,20 @@ describe('nature.js', function(){
 
 
 				pub.privTest = function(){
-					return priv.test;
+					return prot.test;
 				}
-			});
+			}
+			//Regular class
+			Class1 = nature.create(test1ClassFunction);
 
 			a = new Class1("foo", "bar");
 			b = new Class1();
 
-			assert(a instanceof Class1 && a.args[0]=="foo" && a.args[1]=="bar" && b!=a && typeof b.args[0] === 'undefined', "consistent class spawning");
+			assert(a instanceof Class1, "instanceof");
+			assert(a.args[0]=="foo", "constructor argument 1");
+			assert(a.args[1]=="bar", "constructor argument 2");
+			assert(b!=a, "2 instances are not the same");
+			assert(typeof b.args[0] === 'undefined', "undefined arguments");
 		})
 
 		it('instance has consistent public variables', function(){
@@ -87,20 +100,53 @@ describe('nature.js', function(){
 
 	})
 
+	describe('factories', function(){
+
+		it('#factory(Factory1) spawns a new factory', function(){
+
+			//Regular class
+			Factory1 = nature.factory(test1ClassFunction);
+
+			l = Factory1("foo", "bar");
+			m = Factory1();
+
+			assert(typeof l === "function", "instance is a function");
+			assert(l.args[0]=="foo", "constructor argument 1");
+			assert(l.args[1]=="bar", "constructor argument 2");
+			assert(m!=l, "2 instances are not the same");
+			assert(typeof m.args[0] === 'undefined', "undefined arguments");
+		})
+
+		it('instance has consistent public variables', function(){
+			//test pub
+			assert(l.test==l.pubTest() && m.test!=l.test, "public properties");
+		})
+
+		it('instance has consistent private variables', function(){
+			//test pub
+			assert(l.privTest()!=m.privTest(), "private properties");
+		})
+
+		it('instance() is prot.scope()', function(){
+			//test pub
+			assert(l()===l.factoryTest(), "prot.scope()===l.factoryTest()");
+		})
+	})
+
 	describe('inheretance (1st level)', function(){
 
-		it('#from().create() spawns inhereted class',function(){
+		it('#from(Factory1).create(Class2) spawns inhereted class',function(){
 
 			//2nd level class
-			Class2 = nature.from(Class1).create(function(pub, priv){
-				var superConstruct = priv.construct;
-				priv.construct = function(){
-					superConstruct.apply(priv, arguments);
-					priv.abc = "abc";
+			Class2 = nature.from(Factory1).create(function(pub, prot){
+				var superConstruct = prot.construct;
+				prot.construct = function(){
+					superConstruct.apply(prot, arguments);
+					prot.abc = "abc";
 				}
 				var superPrivTest = pub.privTest;
 				pub.privTest = function(){
-					return typeof superPrivTest() == "object" && priv.abc=="abc";
+					return typeof superPrivTest() == "object" && prot.abc=="abc";
 				}
 			});
 
@@ -119,17 +165,17 @@ describe('nature.js', function(){
 
 	describe('inheretance (2nd level)', function(){
 
-		it('#from(InheritedClass).create() spawns inherited class (2nd level)',function(){
+		it('#from(Class2).create(Class3) spawns inherited class (2nd level)',function(){
 
 			//3rd level class
-			Class3 = nature.from(Class2).create(function(pub, priv){
+			Class3 = nature.from(Class2).create(function(pub, prot){
 
-				priv.extra = 3;
+				prot.extra = 3;
 
 				var superPrivTest = pub.privTest;
 				pub.privTest = function(){
 
-					return superPrivTest() && priv.extra==3;
+					return superPrivTest() && prot.extra==3;
 
 				}
 
@@ -150,22 +196,22 @@ describe('nature.js', function(){
 
 	describe('multiple inheretance (3rd level)', function(){
 
-		it('#from(2ndLevelInerited, AnotherClass).create() spawns multiple inhereted class (3rd level)',function(){
+		it('#from(Class3, OtherClass).factory(Factory2) spawns multiple inhereted factory (3rd level)',function(){
 
 			//4th level class - w/ multiple inheretance
-			Class4Extra = nature.create(function(pub, priv){
-				priv.multipleExtra = 4;
+			MultipleIh3rdExtra = nature.create(function(pub, prot){
+				prot.multipleExtra = 4;
 			})
-			Class4 = nature.from(Class3, Class4Extra).create(function(pub, priv){
+			Factory2 = nature.from(Class3, MultipleIh3rdExtra).factory(function(pub, prot){
 
 				pub.test4 = function(){
-					return priv.extra == 3 && priv.multipleExtra==4;
+					return prot.extra == 3 && prot.multipleExtra==4;
 				}
 
 			});
 
-			e = new Class4("foo", "bar");
-			assert(e instanceof Class4 && e.args[0]=="foo" && e.args[1]=="bar", "consistent multiple inherited spawn");
+			e = Factory2("foo", "bar");
+			assert(typeof e === "function" && e.args[0]=="foo" && e.args[1]=="bar", "consistent multiple inherited spawn");
 		})
 
 		it('instance inherits public scope', function(){
@@ -179,28 +225,37 @@ describe('nature.js', function(){
 		it('instance inherits private scope', function(){
 			assert(e.privTest(), "consistent inherited private scope");
 		})
+
+		it('instance() is prot.scope()', function(){
+			//test pub
+			assert(e()===e.factoryTest(), "prot.scope()===l.factoryTest()");
+		})
 	})
 
 	describe('packages',function(){
-		it('#createPackage().create() spawns pack classes', function(){
+		it('#createPackage().create() spawns pack classes - pack.from(Factory2).create(PC1)', function(){
 			//PACKAGE TESTS
-
 			pack = nature.createPackage();
 
-			PackClass1 = pack.create(function(pub, priv){
+			PackClass1 = pack.create(function(pub, prot){
 				pub.setTestPack = function(a){
-					priv.testPack = "test";
+					prot.testPack = "test";
 				}
 			});
 
-			PackClass2 = pack.from(Class4).create(function(pub, priv, unfold){
+			PackFactory1 = pack.from(Factory2).factory(function(pub, prot, unfold){
+
+				prot.scope = function(){
+					return 5
+				};
+
 				pub.testPack = function(obj){
 					return unfold(obj).testPack==="test";
 				}
 			});
 
 			f = new PackClass1();
-			g = new PackClass2();
+			g = PackFactory1();
 		})
 
 		it('instance allows for cross-private access within package instances', function(){
@@ -208,7 +263,7 @@ describe('nature.js', function(){
 			assert(g.testPack(f), "cross-private access");
 		})
 
-		it('package.close() correctly locks packages (.create())', function(){
+		it('package.close() correctly locks .create()', function(){
 
 			pack.close();
 
@@ -222,7 +277,7 @@ describe('nature.js', function(){
 			assert(passed, "successful lock error");
 		})
 
-		it('package.close() correctly locks packages (from().create())', function(){
+		it('package.close() correctly locks from().create()', function(){
 
 			pack.close();
 
@@ -251,13 +306,16 @@ describe('nature.js', function(){
 
 			pack2 = nature.createPackage();
 
-			Class5 = pack2.from(PackClass2).create(function(pub, priv, unfold){
+			Factory3 = pack2.from(PackFactory1).factory(function(pub, prot, unfold){
+
+				delete prot.scope;
+
 				pub.testPack2 = function(obj){
 					return unfold(obj).testPack==="test";
 				}
 			})
 
-			h = new Class5();
+			h = Factory3();
 			assert(h.testPack(f), "child Class inherited package methods private package access");
 		})
 
@@ -272,6 +330,16 @@ describe('nature.js', function(){
 			assert(passed, "child Class no access to parent package objects in it's own methods");
 		})
 
+		it("overriding prot.scope works", function(){
+			//h can't access f priv in it's own methods
+			assert(g() === 5, "g() should be 5");
+		})
+
+		it("delete prot.scope; works", function(){
+			//h can't access f priv in it's own methods
+			assert(typeof h === 'object', "h should default to an object");
+		})
+
 	})
 
 	describe('package inheretance',function(){
@@ -281,7 +349,7 @@ describe('nature.js', function(){
 			//subpackage of pack1
 			pack3 = pack.createPackage();
 
-			Class6 = pack3.from(PackClass2).create(function(pub, priv, unfold){
+			Class6 = pack3.from(PackFactory1).create(function(pub, prot, unfold){
 				pub.testPack2 = function(obj){
 					return unfold(obj).testPack==="test";
 				}
