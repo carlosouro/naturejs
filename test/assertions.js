@@ -52,10 +52,7 @@ describe('nature.js', function(){
 				}
 
 				prot.scope = function(){
-					return prot.test;
-				}
-				pub.factoryTest = function(){
-					return prot.test;
+					return pub;
 				}
 
 				prot.test = {};
@@ -129,7 +126,8 @@ describe('nature.js', function(){
 
 		it('instance() is prot.scope()', function(){
 			//test pub
-			assert(l()===l.factoryTest(), "prot.scope()===l.factoryTest()");
+			console.log("test: ", l(), l)
+			assert(l()===l, "prot.scope()===pub");
 		})
 	})
 
@@ -228,7 +226,7 @@ describe('nature.js', function(){
 
 		it('instance() is prot.scope()', function(){
 			//test pub
-			assert(e()===e.factoryTest(), "prot.scope()===l.factoryTest()");
+			assert(e()===e, "prot.scope()===pub");
 		})
 	})
 
@@ -246,7 +244,7 @@ describe('nature.js', function(){
 			PackFactory1 = pack.from(Factory2).factory(function(pub, prot, unfold){
 
 				prot.scope = function(){
-					return 5
+					return 5;
 				};
 
 				pub.testPack = function(obj){
@@ -337,7 +335,7 @@ describe('nature.js', function(){
 
 		it("delete prot.scope; works", function(){
 			//h can't access f priv in it's own methods
-			assert(typeof h === 'object', "h should default to an object");
+			assert(typeof h() === 'undefined', "h() should return undefined");
 		})
 
 	})

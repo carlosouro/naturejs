@@ -85,45 +85,31 @@ var nature = (function(){
 			}
 		}
 
-		var NatureFactory;
-		if(!factoryMode){
 
-			//regular class (returns Class)
-			NatureFactory = function Class(){
-				generateInstance(arguments, this, {});
-			}
-
-		} else {
-			//a factory method (returns function)
-			NatureFactory = function Factory(){
-				var instance = {}, prot = {};
-
-				generateInstance(arguments, instance, prot);
-
-				var main;
-				if(['object', 'function'].indexOf(typeof prot.scope)!==-1 && prot.scope!==null){
-					main = prot.scope;
-					for(el in instance) {
-						main[el] = instance[el];
-					}
-				} else {
-					main = instance;
+		function Nature(){
+			var prot = {};
+			//in factoryMode our instance is actually a function calling prot.scope
+			var instance = factoryMode ? function(){
+				if(typeof prot.scope === 'function'){
+					return prot.scope.apply(instance, arguments)
 				}
+			} : this;
 
-				return main;
-			}
+			generateInstance(arguments, instance, prot);
+
+			return instance;
 		}
 
 
 		//save definitions for future inheritance dependencies
-		Object.defineProperty(NatureFactory, "nature:definition", {
+		Object.defineProperty(Nature, "nature:definition", {
 		  enumerable: false,
 		  configurable: false,
 		  writable: false,
 		  value: args
 		});
 
-		return NatureFactory;
+		return Nature;
 
 	}
 
