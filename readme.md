@@ -1,7 +1,9 @@
 # NatureJS
 ![nature-js NPM package information](https://nodei.co/npm/nature-js.png "nature-js NPM package information")
 
-![nature-js travis-CI build](https://travis-ci.org/Odobo/naturejs.svg "nature-js travis-CI build") ![nature-js test coverage](https://coveralls.io/repos/Odobo/naturejs/badge.svg "nature-js test coverage")
+![nature-js travis-CI build](https://travis-ci.org/Odobo/naturejs.svg "nature-js travis-CI build") ![nature-js test coverage](https://coveralls.io/repos/Odobo/naturejs/badge.svg "nature-js test coverage") ![nature-js bower component](https://badge.fury.io/bo/nature-js.svg "nature-js bower component")
+
+
 
 NatureJS is an easy to use Class system for Javascript supporting private, protected and package scopes, and inheritance.
 Supported in any Ecma5 compliant javascript environment (node.js or browser).
