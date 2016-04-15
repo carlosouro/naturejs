@@ -1,7 +1,7 @@
 # NatureJS
 ![nature-js NPM package information](https://nodei.co/npm/nature-js.png "nature-js NPM package information")
 
-![nature-js travis-CI build](https://travis-ci.org/Odobo/naturejs.svg "nature-js travis-CI build") ![nature-js test coverage](https://coveralls.io/repos/Odobo/naturejs/badge.svg "nature-js test coverage") ![nature-js bower component](https://badge.fury.io/bo/nature-js.svg "nature-js bower component")
+![nature-js travis-CI build](https://travis-ci.org/Odobo/naturejs.svg "nature-js travis-CI build") ![nature-js test coverage](https://coveralls.io/repos/github/Odobo/naturejs/badge.svg?branch=master "nature-js test coverage") ![nature-js bower component](https://badge.fury.io/bo/nature-js.svg "nature-js bower component")
 
 
 
