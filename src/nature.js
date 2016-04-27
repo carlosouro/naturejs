@@ -89,11 +89,21 @@ var nature = (function(){
 		function Nature(){
 			var prot = {};
 			//in factoryMode our instance is actually a function calling prot.scope
-			var instance = factoryMode ? function(){
-				if(typeof prot.scope === 'function'){
-					return prot.scope.apply(this, arguments)
-				}
-			} : this;
+			var instance = this;
+
+      if(factoryMode) {
+        instance = function(){
+  				if(typeof prot.scope === 'function'){
+  					return prot.scope.apply(this, arguments)
+  				}
+  			}
+        Object.defineProperty(instance, "nature:isFactory", {
+          enumerable: false,
+          configurable: false,
+          writable: false,
+          value: true
+        });
+      }
 
 			generateInstance(arguments, instance, prot);
 

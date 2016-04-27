@@ -1,7 +1,7 @@
 {
   "name": "nature-js",
   "description": "Class system for Javascript supporting private, protected and public scopes, multiple inheritance and class packages",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "homepage": "",
   "author": {
     "name": "Carlos Ouro",
