@@ -91,7 +91,7 @@ var nature = (function(){
 			//in factoryMode our instance is actually a function calling prot.scope
 			var instance = factoryMode ? function(){
 				if(typeof prot.scope === 'function'){
-					return prot.scope.apply(instance, arguments)
+					return prot.scope.apply(this, arguments)
 				}
 			} : this;
 
