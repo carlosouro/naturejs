@@ -107,6 +107,13 @@ var nature = (function(){
 
 			generateInstance(arguments, instance, prot);
 
+      if(factoryMode) {
+        //keep inheritance chain
+        if(typeof prot.scope === 'function'){
+          instance.prototype = prot.scope.prototype;
+        }
+      }
+
 			return instance;
 		}
 
