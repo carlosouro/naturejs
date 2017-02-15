@@ -357,21 +357,21 @@ describe('nature.js', function(){
 		})
 
 		it("should result in valid inheritance hierarchies", function(){
-			let alpha = nature.create((pub, prot) => {
+			var alpha = nature.create((pub, prot) => {
 				pub.aFunction = () => {}
 			})
 
-			let bravo = nature.from(alpha).create((pub, prot) => {
+			var bravo = nature.from(alpha).create((pub, prot) => {
 				pub.bFunction = () => {}
 			})
 
-			let charlie = nature.create(() => {})
+			var charlie = nature.create(() => {})
 
-			let delta = nature.from(alpha).create(() => {})
+			var delta = nature.from(alpha).create(() => {})
 
-			let bravoInstance = new bravo()
-			let charlieInstance = new charlie()
-			let deltaInstance = new delta()
+			var bravoInstance = new bravo()
+			var charlieInstance = new charlie()
+			var deltaInstance = new delta()
 			console.log("!", deltaInstance.__proto__.constructor.name)
 			assert(bravoInstance.aFunction !== undefined, "bravoInstance: should inherit the method")
 			assert(deltaInstance.bFunction === undefined, "deltaInstance: should inherit from alpha, but not bravo")
