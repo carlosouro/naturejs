@@ -357,17 +357,17 @@ describe('nature.js', function(){
 		})
 
 		it("should result in valid inheritance hierarchies", function(){
-			var alpha = nature.create((pub, prot) => {
-				pub.aFunction = () => {}
+			var alpha = nature.create(function (pub, prot) {
+				pub.aFunction = function () {}
 			})
 
-			var bravo = nature.from(alpha).create((pub, prot) => {
-				pub.bFunction = () => {}
+			var bravo = nature.from(alpha).create(function (pub, prot) {
+				pub.bFunction =  function () {}
 			})
 
-			var charlie = nature.create(() => {})
+			var charlie = nature.create(function () {})
 
-			var delta = nature.from(alpha).create(() => {})
+			var delta = nature.from(alpha).create(function () {})
 
 			var bravoInstance = new bravo()
 			var charlieInstance = new charlie()
