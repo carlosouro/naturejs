@@ -372,7 +372,7 @@ describe('nature.js', function(){
 			var bravoInstance = new bravo()
 			var charlieInstance = new charlie()
 			var deltaInstance = new delta()
-			console.log("!", deltaInstance.__proto__.constructor.name)
+			
 			assert(bravoInstance.aFunction !== undefined, "bravoInstance: should inherit the method")
 			assert(deltaInstance.bFunction === undefined, "deltaInstance: should inherit from alpha, but not bravo")
 			assert(charlieInstance.aFunction === undefined, "charlieInstance: has no inheritance, should not inherit the method")
