@@ -356,6 +356,28 @@ describe('nature.js', function(){
 			l = new Class6();
 		})
 
+		it("should result in valid inheritance hierarchies", function(){
+			let alpha = nature.create((pub, prot) => {
+				pub.aFunction = () => {}
+			})
+
+			let bravo = nature.from(alpha).create((pub, prot) => {
+				pub.bFunction = () => {}
+			})
+
+			let charlie = nature.create(() => {})
+
+			let delta = nature.from(alpha).create(() => {})
+
+			let bravoInstance = new bravo()
+			let charlieInstance = new charlie()
+			let deltaInstance = new delta()
+			console.log("!", deltaInstance.__proto__.constructor.name)
+			assert(bravoInstance.aFunction !== undefined, "bravoInstance: should inherit the method")
+			assert(deltaInstance.bFunction === undefined, "deltaInstance: should inherit from alpha, but not bravo")
+			assert(charlieInstance.aFunction === undefined, "charlieInstance: has no inheritance, should not inherit the method")
+		})
+
 		it("instance allows, through it's parent methods, cross-private inheretance to parent package instances", function(){
 			assert(l.testPack2(f), "subpackage: can access private scope on instances of parent package");
 		})
