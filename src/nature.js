@@ -126,13 +126,6 @@ var nature = (function(){
 			value: args
 		});
 
-		Object.defineProperty(Nature, "name", {
-			enumerable: false,
-			configurable: false,
-			writable: false,
-			value: 'test'
-		});
-
 		return Nature;
 
 	}
