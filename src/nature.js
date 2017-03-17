@@ -91,28 +91,28 @@ var nature = (function(){
 			//in factoryMode our instance is actually a function calling prot.scope
 			var instance = this;
 
-      if(factoryMode) {
-        instance = function(){
-  				if(typeof prot.scope === 'function'){
-  					return prot.scope.apply(this, arguments)
-  				}
-  			}
-        Object.defineProperty(instance, "nature:isFactory", {
-          enumerable: false,
-          configurable: false,
-          writable: false,
-          value: true
-        });
-      }
+			if(factoryMode) {
+				instance = function(){
+					if(typeof prot.scope === 'function'){
+						return prot.scope.apply(this, arguments)
+					}
+				}
+				Object.defineProperty(instance, "nature:isFactory", {
+					enumerable: false,
+					configurable: false,
+					writable: false,
+					value: true
+				});
+			}
 
 			generateInstance(arguments, instance, prot);
 
-      if(factoryMode) {
-        //keep inheritance chain
-        if(typeof prot.scope === 'function'){
-          instance.prototype = prot.scope.prototype;
-        }
-      }
+			if(factoryMode) {
+				//keep inheritance chain
+				if(typeof prot.scope === 'function'){
+					instance.prototype = prot.scope.prototype;
+				}
+			}
 
 			return instance;
 		}
@@ -120,10 +120,10 @@ var nature = (function(){
 
 		//save definitions for future inheritance dependencies
 		Object.defineProperty(Nature, "nature:definition", {
-		  enumerable: false,
-		  configurable: false,
-		  writable: false,
-		  value: args
+			enumerable: false,
+			configurable: false,
+			writable: false,
+			value: args
 		});
 
 		return Nature;
@@ -167,7 +167,10 @@ var nature = (function(){
 				}
 			},
 
-			create: generateCreateMethod([]),
+			create: function create() {
+				return generateCreateMethod([]).apply(null, arguments)
+			},
+
 			factory: generateCreateMethod([], true)
 		}
 
